@@ -35,7 +35,7 @@ var NextPad = (function (jQuery) {
 				} else if("patch" in gotJSON) {
 					console.log(gotJSON);
 					lastContent = editable.html();
-					thisContent = dmp.patch_apply(gotJSON["patch"], lastContent)[0];
+					thisContent = dmp.patch_apply(dmp.patch_fromText(gotJSON["patch"]), lastContent)[0];
 					editable.html(thisContent);
 				}
 			};
@@ -48,7 +48,7 @@ var NextPad = (function (jQuery) {
 
 					// generate the diff if something changed
 					if(lastContent != thisContent) {
-						patch = dmp.patch_make(lastContent, thisContent);
+						patch = dmp.patch_toText(dmp.patch_make(lastContent, thisContent));
 
 						// send it to the server
 						ws.send(JSON.stringify({"patch": patch}));
