@@ -37,7 +37,10 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
 			# send the current content
 			content = self.db.db.pads.find_one({"padID": self.padID})["last"]
-			self.write_message('{"text": "' + content + '"}')
+			try:
+				self.write_message('{"text": "' + content + '"}')
+			except:
+				pass
 
 		# diff thingy
 		if "patch" in message:
@@ -48,7 +51,10 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 				# push it to all pad collaborators
 				for user in pads[self.padID]:
 					if user != self:
-						user.write_message(message)
+						try:
+							user.write_message(message)
+						except:
+							pass
 
 	def on_close(self):
 		print("{0} closed his socket.".format(self.session))
