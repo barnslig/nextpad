@@ -10,7 +10,7 @@ var NextPad = (function (jQuery) {
 		this.lastContent = "";
 		this.thisContent = "";
 		this.dmp = new diff_match_patch();
-		this.ws = new WebSocket(this.config.ws);
+		this.ws = new ReconnectingWebSocket(this.config.ws);
 	}
 	(function (fn) {
 		fn.run = function() {
@@ -26,7 +26,7 @@ var NextPad = (function (jQuery) {
 
 			// configure the websocket
 			instance.ws.onopen = function() {
-				console.log("WebSocket opened.");
+				// send the initial padID
 				instance.ws.send(JSON.stringify({"padID": instance.config.padID}));
 			};
 			instance.ws.onmessage = function(evt) {
@@ -41,6 +41,7 @@ var NextPad = (function (jQuery) {
 				}
 			};
 			instance.ws.onclose = function() {
+				// show the overlay
 				$('#loading').show();
 			};
 
